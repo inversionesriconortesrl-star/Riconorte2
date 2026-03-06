@@ -4,6 +4,6 @@
   "description": "Sistema de solicitudes de crédito RicoNorte",
   "private": true,
   "engines": {
-    "node": "18.x"
+    "node": "24.x"
   }
 }
