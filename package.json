@@ -1,0 +1,9 @@
+{
+  "name": "riconorte-solicitudes",
+  "version": "1.0.0",
+  "description": "Sistema de solicitudes de crédito RicoNorte",
+  "private": true,
+  "engines": {
+    "node": "18.x"
+  }
+}

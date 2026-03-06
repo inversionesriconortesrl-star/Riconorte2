@@ -1,0 +1,1953 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solicitud de Crédito | RicoNorte</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<style>
+  :root {
+    --navy: #0d2340;
+    --navy-mid: #1a3a5c;
+    --gold: #c9a84c;
+    --gold-light: #e8c96a;
+    --cream: #faf6ee;
+    --white: #ffffff;
+    --text-dark: #0d2340;
+    --text-mid: #3a4a5c;
+    --text-light: #7a8a9a;
+    --border: #d8e4f0;
+    --error: #e05252;
+    --success: #2ecc71;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--navy);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Background pattern */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 10%, rgba(201,168,76,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 90%, rgba(201,168,76,0.06) 0%, transparent 50%),
+      repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 60px,
+        rgba(255,255,255,0.01) 60px,
+        rgba(255,255,255,0.01) 61px
+      );
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .page-wrapper {
+    position: relative;
+    z-index: 1;
+    padding: 0 0 60px 0;
+  }
+
+  /* ── HEADER ── */
+  .site-header {
+    background: linear-gradient(135deg, var(--navy) 0%, #0a1e35 50%, #0d2d4a 100%);
+    border-bottom: 2px solid rgba(201,168,76,0.3);
+    padding: 28px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    backdrop-filter: blur(10px);
+  }
+
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .logo-circle {
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--navy-mid), #0a1e35);
+    border: 2.5px solid var(--gold);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-weight: 900;
+    font-size: 20px;
+    color: var(--gold);
+    letter-spacing: -1px;
+    box-shadow: 0 0 20px rgba(201,168,76,0.2), inset 0 0 15px rgba(0,0,0,0.3);
+    flex-shrink: 0;
+  }
+
+  .brand-text .name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--white);
+    letter-spacing: 2px;
+    line-height: 1;
+  }
+
+  .brand-text .tagline {
+    font-size: 10px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 3px;
+    font-weight: 500;
+  }
+
+  .header-badge {
+    background: rgba(201,168,76,0.12);
+    border: 1px solid rgba(201,168,76,0.3);
+    border-radius: 20px;
+    padding: 8px 18px;
+    font-size: 11px;
+    color: var(--gold-light);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 60px 40px 40px;
+  }
+
+  .hero-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(201,168,76,0.1);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 30px;
+    padding: 8px 20px;
+    font-size: 11px;
+    color: var(--gold);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-weight: 600;
+    margin-bottom: 22px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(32px, 5vw, 54px);
+    font-weight: 900;
+    color: var(--white);
+    line-height: 1.1;
+    margin-bottom: 14px;
+  }
+
+  .hero h1 span {
+    color: var(--gold);
+    display: block;
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.55);
+    font-size: 15px;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+    font-weight: 300;
+  }
+
+  /* ── FORM CONTAINER ── */
+  .form-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  /* ── SECTION CARD ── */
+  .section-card {
+    background: rgba(255,255,255,0.97);
+    border-radius: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.25), 0 2px 8px rgba(0,0,0,0.15);
+    border: 1px solid rgba(201,168,76,0.15);
+    animation: slideUp 0.5s ease both;
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-card:nth-child(1) { animation-delay: 0.05s; }
+  .section-card:nth-child(2) { animation-delay: 0.1s; }
+  .section-card:nth-child(3) { animation-delay: 0.15s; }
+  .section-card:nth-child(4) { animation-delay: 0.2s; }
+  .section-card:nth-child(5) { animation-delay: 0.25s; }
+  .section-card:nth-child(6) { animation-delay: 0.3s; }
+
+  .section-header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--navy-mid) 100%);
+    padding: 18px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .section-number {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--navy);
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--white);
+    letter-spacing: 0.5px;
+  }
+
+  .section-subtitle {
+    font-size: 11px;
+    color: rgba(255,255,255,0.5);
+    margin-top: 2px;
+    font-weight: 300;
+    letter-spacing: 0.5px;
+  }
+
+  .section-body {
+    padding: 28px;
+  }
+
+  /* ── FORM GRID ── */
+  .form-grid {
+    display: grid;
+    gap: 18px;
+  }
+
+  .grid-2 { grid-template-columns: 1fr 1fr; }
+  .grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  @media (max-width: 640px) {
+    .grid-2, .grid-3 { grid-template-columns: 1fr; }
+    .site-header { padding: 18px 20px; }
+    .hero { padding: 40px 20px 30px; }
+    .section-body { padding: 20px; }
+    .header-badge { display: none; }
+  }
+
+  /* ── FIELD ── */
+  .field {
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .field label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text-mid);
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+
+  .field label .required {
+    color: var(--gold);
+    margin-left: 3px;
+  }
+
+  .field input,
+  .field select,
+  .field textarea {
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text-dark);
+    background: #f8fafd;
+    transition: all 0.2s ease;
+    outline: none;
+    width: 100%;
+  }
+
+  .field input:focus,
+  .field select:focus,
+  .field textarea:focus {
+    border-color: var(--gold);
+    background: var(--white);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.12);
+  }
+
+  .field input.error,
+  .field select.error {
+    border-color: var(--error);
+    background: #fff8f8;
+  }
+
+  .field input::placeholder { color: #b0bcc8; }
+
+  .field textarea {
+    resize: vertical;
+    min-height: 80px;
+  }
+
+  .field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23c9a84c' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    padding-right: 40px;
+  }
+
+  /* ── LOAN TYPE ── */
+  .loan-type-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  @media (max-width: 480px) { .loan-type-grid { grid-template-columns: 1fr 1fr; } }
+
+  .loan-type-option {
+    position: relative;
+  }
+
+  .loan-type-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .loan-type-option label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 16px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8fafd;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .loan-type-option label .icon {
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+
+  .loan-type-option input:checked + label {
+    border-color: var(--gold);
+    background: linear-gradient(135deg, rgba(201,168,76,0.08), rgba(201,168,76,0.04));
+    color: var(--navy);
+    font-weight: 600;
+  }
+
+  .loan-type-option label:hover {
+    border-color: rgba(201,168,76,0.5);
+    background: rgba(201,168,76,0.05);
+  }
+
+  /* ── GUARANTEE ── */
+  .guarantee-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 560px) { .guarantee-grid { grid-template-columns: 1fr; } }
+
+  .guarantee-option {
+    position: relative;
+  }
+
+  .guarantee-option input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .guarantee-option label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    background: #f8fafd;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-mid);
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  .guarantee-option input:checked + label {
+    border-color: var(--gold);
+    background: rgba(201,168,76,0.06);
+    color: var(--navy);
+  }
+
+  .guarantee-details {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    padding: 16px;
+    background: rgba(201,168,76,0.05);
+    border-radius: 10px;
+    border: 1px solid rgba(201,168,76,0.2);
+    margin-top: -4px;
+    margin-bottom: 8px;
+    animation: fadeIn 0.25s ease;
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .guarantee-details.active { display: grid; }
+
+  /* ── DECLARATION ── */
+  .declaration-box {
+    background: linear-gradient(135deg, rgba(13,35,64,0.04), rgba(201,168,76,0.04));
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+  }
+
+  .declaration-box p {
+    font-size: 13px;
+    color: var(--text-mid);
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .declaration-box strong {
+    color: var(--navy);
+    font-weight: 600;
+  }
+
+  .accept-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: 16px;
+  }
+
+  .accept-row input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    margin-top: 1px;
+    accent-color: var(--gold);
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .accept-row label {
+    font-size: 13px;
+    color: var(--text-dark);
+    line-height: 1.5;
+    cursor: pointer;
+    font-weight: 400;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+
+  /* ── SUBMIT BUTTON ── */
+  .submit-area {
+    text-align: center;
+    padding: 10px 0 0;
+  }
+
+  .btn-submit {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 50%, var(--gold) 100%);
+    background-size: 200% auto;
+    color: var(--navy);
+    border: none;
+    border-radius: 50px;
+    padding: 18px 52px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 30px rgba(201,168,76,0.35), 0 2px 8px rgba(0,0,0,0.15);
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+    min-width: 280px;
+  }
+
+  .btn-submit:hover {
+    background-position: right center;
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(201,168,76,0.45), 0 4px 12px rgba(0,0,0,0.2);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+  .btn-submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-submit .btn-icon {
+    font-size: 20px;
+  }
+
+  .btn-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+    letter-spacing: 0.5px;
+  }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--navy);
+    color: var(--white);
+    padding: 16px 24px;
+    border-radius: 14px;
+    box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    border-left: 4px solid var(--gold);
+    font-size: 14px;
+    font-weight: 500;
+    z-index: 9999;
+    transform: translateX(120%);
+    transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+    max-width: 360px;
+  }
+
+  .toast.show { transform: translateX(0); }
+  .toast.success { border-left-color: var(--success); }
+  .toast.error { border-left-color: var(--error); }
+
+  .toast-title { font-weight: 700; margin-bottom: 4px; }
+  .toast-msg { font-size: 12px; opacity: 0.75; font-weight: 300; }
+
+  /* ── PROGRESS INDICATOR ── */
+  .progress-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light));
+    transition: width 0.3s ease;
+    z-index: 999;
+    border-radius: 0 2px 2px 0;
+  }
+
+  /* ── MODAL ── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.7);
+    backdrop-filter: blur(6px);
+    z-index: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    padding: 20px;
+  }
+
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal {
+    background: var(--white);
+    border-radius: 24px;
+    padding: 48px 40px;
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 30px 80px rgba(0,0,0,0.3);
+  }
+
+  .modal-overlay.active .modal { transform: scale(1); }
+
+  .modal-icon {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, rgba(46,204,113,0.12), rgba(46,204,113,0.06));
+    border: 2px solid rgba(46,204,113,0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+    margin: 0 auto 24px;
+  }
+
+  .modal h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    color: var(--navy);
+    margin-bottom: 12px;
+  }
+
+  .modal p {
+    color: var(--text-light);
+    font-size: 14px;
+    line-height: 1.6;
+    margin-bottom: 28px;
+  }
+
+  .modal-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn-modal {
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+  }
+
+  .btn-modal-primary {
+    background: linear-gradient(135deg, var(--gold), var(--gold-light));
+    color: var(--navy);
+    box-shadow: 0 4px 15px rgba(201,168,76,0.3);
+  }
+
+  .btn-modal-primary:hover { transform: translateY(-1px); }
+
+  .btn-modal-secondary {
+    background: #f0f4f8;
+    color: var(--text-mid);
+  }
+
+  .btn-modal-secondary:hover { background: #e4eaf0; }
+
+  /* ── DIVIDER ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border), transparent);
+    margin: 22px 0;
+  }
+
+  /* ── INLINE BADGE ── */
+  .amount-prefix {
+    display: flex;
+    align-items: stretch;
+  }
+
+  .amount-prefix span {
+    display: flex;
+    align-items: center;
+    padding: 0 14px;
+    background: linear-gradient(135deg, var(--navy), var(--navy-mid));
+    color: var(--gold);
+    font-weight: 700;
+    font-size: 15px;
+    border-radius: 10px 0 0 10px;
+    border: 1.5px solid var(--border);
+    border-right: none;
+    flex-shrink: 0;
+  }
+
+  .amount-prefix input {
+    border-radius: 0 10px 10px 0 !important;
+  }
+
+  /* ── FOOTER NOTE ── */
+  .footer-note {
+    text-align: center;
+    padding: 40px 24px 0;
+    color: rgba(255,255,255,0.3);
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    line-height: 1.8;
+  }
+
+  /* ── HIDDEN PDF TEMPLATE ── */
+  #pdf-template {
+    position: absolute;
+    left: -9999px;
+    top: 0;
+    width: 794px;
+    background: white;
+    font-family: 'DM Sans', sans-serif;
+    padding: 0;
+  }
+
+  .pdf-header {
+    background: linear-gradient(135deg, #0d2340 0%, #1a3a5c 100%);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 4px solid #c9a84c;
+  }
+
+  .pdf-logo-text {
+    font-family: serif;
+    font-size: 28px;
+    font-weight: 900;
+    color: white;
+    letter-spacing: 3px;
+  }
+
+  .pdf-logo-sub {
+    font-size: 10px;
+    color: #c9a84c;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .pdf-doc-info {
+    text-align: right;
+  }
+
+  .pdf-doc-title {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  .pdf-doc-num {
+    font-size: 22px;
+    font-weight: 700;
+    color: #c9a84c;
+    margin-top: 4px;
+  }
+
+  .pdf-body {
+    padding: 36px 48px;
+  }
+
+  .pdf-section {
+    margin-bottom: 28px;
+  }
+
+  .pdf-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    color: #0d2340;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding-bottom: 8px;
+    border-bottom: 2px solid #c9a84c;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .pdf-section-num {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: #c9a84c;
+    color: #0d2340;
+    font-size: 11px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .pdf-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 12px;
+  }
+
+  .pdf-field {
+    flex: 1;
+  }
+
+  .pdf-label {
+    font-size: 9px;
+    font-weight: 600;
+    color: #7a8a9a;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+  }
+
+  .pdf-value {
+    font-size: 13px;
+    color: #0d2340;
+    font-weight: 500;
+    padding: 6px 10px;
+    background: #f4f8fc;
+    border-radius: 6px;
+    border: 1px solid #d8e4f0;
+    min-height: 30px;
+  }
+
+  .pdf-loan-highlight {
+    background: linear-gradient(135deg, #0d2340, #1a3a5c);
+    border-radius: 12px;
+    padding: 20px 24px;
+    display: flex;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+
+  .pdf-loan-item {
+    flex: 1;
+    text-align: center;
+  }
+
+  .pdf-loan-label {
+    font-size: 9px;
+    color: rgba(255,255,255,0.5);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 6px;
+  }
+
+  .pdf-loan-val {
+    font-size: 20px;
+    font-weight: 700;
+    color: #c9a84c;
+  }
+
+  .pdf-loan-type {
+    font-size: 12px;
+    color: rgba(255,255,255,0.8);
+  }
+
+  .pdf-footer {
+    background: #f4f8fc;
+    padding: 20px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-top: 2px solid #d8e4f0;
+    margin-top: 16px;
+  }
+
+  .pdf-footer-text {
+    font-size: 10px;
+    color: #7a8a9a;
+    line-height: 1.6;
+  }
+
+  .pdf-signature-box {
+    text-align: center;
+  }
+
+  .pdf-sig-line {
+    width: 160px;
+    border-top: 1.5px solid #0d2340;
+    margin: 0 auto 6px;
+  }
+
+  .pdf-sig-label {
+    font-size: 9px;
+    color: #7a8a9a;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+  }
+
+  .pdf-stamp {
+    font-size: 9px;
+    color: #c9a84c;
+    text-align: center;
+    margin-top: 8px;
+    font-weight: 600;
+    letter-spacing: 2px;
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-bar" id="progressBar"></div>
+
+<div class="page-wrapper">
+
+  <!-- HEADER -->
+  <header class="site-header">
+    <div class="header-brand">
+      <div class="logo-circle">RN</div>
+      <div class="brand-text">
+        <div class="name">RICONORTE</div>
+        <div class="tagline">Inversiones & Gestión de Capital</div>
+      </div>
+    </div>
+    <div class="header-badge">Formulario Oficial</div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-eyebrow">Solicitud de Crédito</div>
+    <h1>Solicita tu Préstamo<span>de forma segura</span></h1>
+    <p>Complete todos los campos requeridos. Su solicitud será procesada por nuestro equipo de crédito en 24-48 horas hábiles.</p>
+  </div>
+
+  <!-- FORM -->
+  <div class="form-container">
+    <form id="loanForm" novalidate>
+
+      <!-- SECCIÓN 1: INFORMACIÓN DEL PRÉSTAMO -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-number">1</div>
+          <div>
+            <div class="section-title">Información del Préstamo</div>
+            <div class="section-subtitle">Uso exclusivo para evaluación según políticas de la administración</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-grid">
+            <div class="field">
+              <label>Tipo de Servicio <span class="required">*</span></label>
+              <div class="loan-type-grid">
+                <div class="loan-type-option">
+                  <input type="checkbox" id="tipo_personal" name="tipo_prestamo" value="Personal">
+                  <label for="tipo_personal"><span class="icon">👤</span> Personal</label>
+                </div>
+                <div class="loan-type-option">
+                  <input type="checkbox" id="tipo_negocio" name="tipo_prestamo" value="Negocios">
+                  <label for="tipo_negocio"><span class="icon">🏢</span> Negocios</label>
+                </div>
+                <div class="loan-type-option">
+                  <input type="checkbox" id="tipo_vehiculo" name="tipo_prestamo" value="Vehículo">
+                  <label for="tipo_vehiculo"><span class="icon">🚗</span> Vehículo</label>
+                </div>
+                <div class="loan-type-option">
+                  <input type="checkbox" id="tipo_vivienda" name="tipo_prestamo" value="Vivienda">
+                  <label for="tipo_vivienda"><span class="icon">🏠</span> Vivienda</label>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="form-grid grid-3">
+            <div class="field">
+              <label>Monto Solicitado <span class="required">*</span></label>
+              <div class="amount-prefix">
+                <span>RD$</span>
+                <input type="number" id="monto" name="monto" placeholder="0.00" min="0" required>
+              </div>
+            </div>
+            <div class="field">
+              <label>Plazo (Meses) <span class="required">*</span></label>
+              <div class="amount-prefix">
+                <input type="number" id="plazo" name="plazo" placeholder="Ej: 12" min="1" max="360" style="border-radius:10px 0 0 10px!important;" required>
+                <span style="border-radius:0 10px 10px 0;border-left:none;font-size:12px;letter-spacing:1px;">meses</span>
+              </div>
+            </div>
+            <div class="field">
+              <label>Finalidad del Préstamo <span class="required">*</span></label>
+              <input type="text" id="finalidad" name="finalidad" placeholder="Ej: Capital de trabajo" required>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 2: DATOS PERSONALES -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-number">2</div>
+          <div>
+            <div class="section-title">Datos Personales del Solicitante</div>
+            <div class="section-subtitle">Se requiere copia de cédula de identidad adjunta</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-grid grid-2">
+            <div class="field">
+              <label>Nombre Completo <span class="required">*</span></label>
+              <input type="text" id="nombre" name="nombre" placeholder="Nombre y apellidos" required>
+            </div>
+            <div class="field">
+              <label>Cédula de Identidad <span class="required">*</span></label>
+              <input type="text" id="cedula" name="cedula" placeholder="000-0000000-0" required>
+            </div>
+            <div class="field">
+              <label>Estado Civil <span class="required">*</span></label>
+              <select id="estado_civil" name="estado_civil" required>
+                <option value="">Seleccionar...</option>
+                <option value="Soltero/a">Soltero/a</option>
+                <option value="Casado/a">Casado/a</option>
+                <option value="Unión Libre">Unión Libre</option>
+                <option value="Divorciado/a">Divorciado/a</option>
+                <option value="Viudo/a">Viudo/a</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Correo Electrónico <span class="required">*</span></label>
+              <input type="email" id="email" name="email" placeholder="correo@ejemplo.com" required>
+            </div>
+          </div>
+          <div class="form-grid" style="margin-top:18px;">
+            <div class="field">
+              <label>Dirección de Residencia <span class="required">*</span></label>
+              <input type="text" id="direccion" name="direccion" placeholder="Calle, sector, ciudad" required>
+            </div>
+          </div>
+          <div class="form-grid grid-2" style="margin-top:18px;">
+            <div class="field">
+              <label>Teléfono Móvil <span class="required">*</span></label>
+              <input type="tel" id="tel_movil" name="tel_movil" placeholder="(809) 000-0000" maxlength="14" required>
+            </div>
+            <div class="field">
+              <label>Teléfono Casa / Trabajo</label>
+              <input type="tel" id="tel_casa" name="tel_casa" placeholder="(809) 000-0000" maxlength="14">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 3: INFORMACIÓN ECONÓMICA -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-number">3</div>
+          <div>
+            <div class="section-title">Información Económica y Laboral</div>
+            <div class="section-subtitle">Base para el análisis de capacidad de pago y estabilidad</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-grid grid-2">
+            <div class="field">
+              <label>Empresa / Actividad Económica <span class="required">*</span></label>
+              <input type="text" id="empresa" name="empresa" placeholder="Nombre empresa o actividad" required>
+            </div>
+            <div class="field">
+              <label>Cargo Ocupado <span class="required">*</span></label>
+              <input type="text" id="cargo" name="cargo" placeholder="Ej: Gerente, Propietario" required>
+            </div>
+            <div class="field">
+              <label>Antigüedad Laboral <span class="required">*</span></label>
+              <select id="antiguedad" name="antiguedad" required>
+                <option value="">Seleccionar...</option>
+                <option value="Menos de 6 meses">Menos de 6 meses</option>
+                <option value="6 - 12 meses">6 - 12 meses</option>
+                <option value="1 - 2 años">1 - 2 años</option>
+                <option value="2 - 5 años">2 - 5 años</option>
+                <option value="Más de 5 años">Más de 5 años</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>Ingresos Mensuales (RD$) <span class="required">*</span></label>
+              <div class="amount-prefix">
+                <span>RD$</span>
+                <input type="number" id="ingresos" name="ingresos" placeholder="0.00" required>
+              </div>
+            </div>
+            <div class="field">
+              <label>Otros Ingresos (RD$)</label>
+              <div class="amount-prefix">
+                <span>RD$</span>
+                <input type="number" id="otros_ingresos" name="otros_ingresos" placeholder="0.00">
+              </div>
+            </div>
+            <div class="field">
+              <label>Gastos Mensuales (RD$) <span class="required">*</span></label>
+              <div class="amount-prefix">
+                <span>RD$</span>
+                <input type="number" id="gastos" name="gastos" placeholder="0.00" required>
+              </div>
+            </div>
+            <div class="field">
+              <label>Total Endeudamiento (RD$)</label>
+              <div class="amount-prefix">
+                <span>RD$</span>
+                <input type="number" id="endeudamiento" name="endeudamiento" placeholder="0.00">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 4: REFERENCIAS -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-number">4</div>
+          <div>
+            <div class="section-title">Referencias</div>
+            <div class="section-subtitle">Requisito obligatorio para el proceso de verificación</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="form-grid grid-2">
+            <div class="field">
+              <label>Referencia Personal — Nombre <span class="required">*</span></label>
+              <input type="text" id="ref_personal_nombre" name="ref_personal_nombre" placeholder="Nombre completo" required>
+            </div>
+            <div class="field">
+              <label>Referencia Personal — Teléfono <span class="required">*</span></label>
+              <input type="tel" id="ref_personal_tel" name="ref_personal_tel" placeholder="(809) 000-0000" maxlength="14" required>
+            </div>
+            <div class="field">
+              <label>Referencia Familiar — Nombre <span class="required">*</span></label>
+              <input type="text" id="ref_familiar_nombre" name="ref_familiar_nombre" placeholder="Nombre completo" required>
+            </div>
+            <div class="field">
+              <label>Referencia Familiar — Teléfono <span class="required">*</span></label>
+              <input type="tel" id="ref_familiar_tel" name="ref_familiar_tel" placeholder="(809) 000-0000" maxlength="14" required>
+            </div>
+            <div class="field">
+              <label>Referencia Laboral / Comercial — Nombre</label>
+              <input type="text" id="ref_laboral_nombre" name="ref_laboral_nombre" placeholder="Nombre / empresa">
+            </div>
+            <div class="field">
+              <label>Referencia Laboral / Comercial — Teléfono</label>
+              <input type="tel" id="ref_laboral_tel" name="ref_laboral_tel" placeholder="(809) 000-0000" maxlength="14">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 5: GARANTÍAS -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-number">5</div>
+          <div>
+            <div class="section-title">Garantías</div>
+            <div class="section-subtitle">Si aplica según el tipo de préstamo solicitado</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="guarantee-grid">
+            <div class="guarantee-option">
+              <input type="checkbox" id="garantia_vehiculo" name="garantia" value="Vehículo" onchange="toggleGuarantee('vehiculo', this.checked)">
+              <label for="garantia_vehiculo">🚗 Vehículo</label>
+            </div>
+            <div class="guarantee-option">
+              <input type="checkbox" id="garantia_inmueble" name="garantia" value="Inmobiliaria" onchange="toggleGuarantee('inmueble', this.checked)">
+              <label for="garantia_inmueble">🏠 Inmobiliaria</label>
+            </div>
+            <div class="guarantee-option">
+              <input type="checkbox" id="garantia_otros" name="garantia" value="Otros" onchange="toggleGuarantee('otros', this.checked)">
+              <label for="garantia_otros">📋 Otros</label>
+            </div>
+          </div>
+
+          <div class="guarantee-details" id="detail_vehiculo">
+            <div class="field">
+              <label>Marca</label>
+              <input type="text" id="vehiculo_marca" name="vehiculo_marca" placeholder="Ej: Toyota">
+            </div>
+            <div class="field">
+              <label>Modelo</label>
+              <input type="text" id="vehiculo_modelo" name="vehiculo_modelo" placeholder="Ej: Corolla">
+            </div>
+            <div class="field">
+              <label>Año</label>
+              <input type="text" id="vehiculo_anio" name="vehiculo_anio" placeholder="Ej: 2020">
+            </div>
+          </div>
+
+          <div class="guarantee-details" id="detail_inmueble">
+            <div class="field">
+              <label>Número de Título de Propiedad</label>
+              <input type="text" id="inmueble_titulo" name="inmueble_titulo" placeholder="No. de título">
+            </div>
+          </div>
+
+          <div class="guarantee-details" id="detail_otros">
+            <div class="field">
+              <label>Descripción de la Garantía</label>
+              <textarea id="otros_desc" name="otros_desc" placeholder="Describa la garantía ofrecida..."></textarea>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SECCIÓN 6: DECLARACIÓN -->
+      <div class="section-card">
+        <div class="section-header">
+          <div class="section-number">6</div>
+          <div>
+            <div class="section-title">Declaración y Firma</div>
+            <div class="section-subtitle">Leer y aceptar antes de enviar la solicitud</div>
+          </div>
+        </div>
+        <div class="section-body">
+          <div class="declaration-box">
+            <p>Al enviar este formulario, el solicitante autoriza a <strong>RicoNorte Inversiones & Gestión de Capital</strong> a realizar las verificaciones pertinentes de sus referencias y datos financieros. Declaro que la información suministrada es <strong>verídica</strong> y entiendo que cualquier irregularidad podrá causar el rechazo de la solicitud por prevención de fraude.</p>
+            <p style="margin-top:10px;">La <strong>aprobación final</strong> está sujeta al análisis del departamento de crédito y el cumplimiento de la documentación completa.</p>
+          </div>
+
+          <div class="accept-row">
+            <input type="checkbox" id="acepto" name="acepto" required>
+            <label for="acepto">He leído y acepto los términos de la declaración, confirmo que toda la información proporcionada es verídica y autorizo a RicoNorte a verificar mis datos.</label>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="submit-area">
+            <button type="submit" class="btn-submit" id="submitBtn">
+              <span class="btn-icon">📤</span>
+              Enviar Solicitud
+            </button>
+            <p class="btn-hint">Su solicitud generará un PDF y será enviada al equipo de RicoNorte</p>
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+
+  <div class="footer-note">
+    © 2025 RicoNorte — Inversiones & Gestión de Capital<br>
+    Operamos bajo las leyes y regulaciones de la República Dominicana
+  </div>
+
+</div>
+
+<!-- SUCCESS MODAL -->
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="modal-icon">✅</div>
+    <h2>¡Solicitud Enviada!</h2>
+    <p>Tu solicitud de crédito ha sido generada y enviada exitosamente al equipo de <strong>RicoNorte</strong>. Recibirás respuesta en 24-48 horas hábiles.</p>
+    <div class="modal-actions">
+      <button class="btn-modal btn-modal-primary" onclick="downloadPDF()">⬇️ Descargar PDF</button>
+      <button class="btn-modal btn-modal-secondary" onclick="closeModal()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">
+  <div class="toast-title" id="toastTitle"></div>
+  <div class="toast-msg" id="toastMsg"></div>
+</div>
+
+<!-- HIDDEN PDF TEMPLATE -->
+<div id="pdf-template">
+  <div class="pdf-header">
+    <div>
+      <div class="pdf-logo-text">RICONORTE</div>
+      <div class="pdf-logo-sub">Inversiones & Gestión de Capital</div>
+    </div>
+    <div class="pdf-doc-info">
+      <div class="pdf-doc-title">Solicitud de Crédito</div>
+      <div class="pdf-doc-num" id="pdf-num">#RN-000001</div>
+    </div>
+  </div>
+  <div class="pdf-body">
+
+    <!-- LOAN HIGHLIGHT -->
+    <div class="pdf-loan-highlight">
+      <div class="pdf-loan-item">
+        <div class="pdf-loan-label">Tipo de Préstamo</div>
+        <div class="pdf-loan-type" id="pdf-tipo" style="font-size:15px;color:white;font-weight:600;">—</div>
+      </div>
+      <div class="pdf-loan-item">
+        <div class="pdf-loan-label">Monto Solicitado</div>
+        <div class="pdf-loan-val" id="pdf-monto">RD$ 0</div>
+      </div>
+      <div class="pdf-loan-item">
+        <div class="pdf-loan-label">Plazo</div>
+        <div class="pdf-loan-val" id="pdf-plazo">— meses</div>
+      </div>
+      <div class="pdf-loan-item">
+        <div class="pdf-loan-label">Finalidad</div>
+        <div class="pdf-loan-type" id="pdf-finalidad" style="font-size:11px;color:rgba(255,255,255,0.8);">—</div>
+      </div>
+    </div>
+
+    <!-- DATOS PERSONALES -->
+    <div class="pdf-section">
+      <div class="pdf-section-title"><span class="pdf-section-num">2</span> Datos Personales del Solicitante</div>
+      <div class="pdf-row">
+        <div class="pdf-field" style="flex:2;">
+          <div class="pdf-label">Nombre Completo</div>
+          <div class="pdf-value" id="pdf-nombre">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Cédula</div>
+          <div class="pdf-value" id="pdf-cedula">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Estado Civil</div>
+          <div class="pdf-value" id="pdf-estado">—</div>
+        </div>
+      </div>
+      <div class="pdf-row">
+        <div class="pdf-field" style="flex:2;">
+          <div class="pdf-label">Dirección</div>
+          <div class="pdf-value" id="pdf-direccion">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Teléfono Móvil</div>
+          <div class="pdf-value" id="pdf-tel">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Correo Electrónico</div>
+          <div class="pdf-value" id="pdf-email">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- INFORMACIÓN ECONÓMICA -->
+    <div class="pdf-section">
+      <div class="pdf-section-title"><span class="pdf-section-num">3</span> Información Económica y Laboral</div>
+      <div class="pdf-row">
+        <div class="pdf-field">
+          <div class="pdf-label">Empresa / Actividad</div>
+          <div class="pdf-value" id="pdf-empresa">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Cargo</div>
+          <div class="pdf-value" id="pdf-cargo">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Antigüedad</div>
+          <div class="pdf-value" id="pdf-antiguedad">—</div>
+        </div>
+      </div>
+      <div class="pdf-row">
+        <div class="pdf-field">
+          <div class="pdf-label">Ingresos Mensuales</div>
+          <div class="pdf-value" id="pdf-ingresos">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Otros Ingresos</div>
+          <div class="pdf-value" id="pdf-otros-ingresos">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Gastos Mensuales</div>
+          <div class="pdf-value" id="pdf-gastos">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Total Endeudamiento</div>
+          <div class="pdf-value" id="pdf-deuda">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REFERENCIAS -->
+    <div class="pdf-section">
+      <div class="pdf-section-title"><span class="pdf-section-num">4</span> Referencias</div>
+      <div class="pdf-row">
+        <div class="pdf-field">
+          <div class="pdf-label">Referencia Personal</div>
+          <div class="pdf-value" id="pdf-ref-personal">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Referencia Familiar</div>
+          <div class="pdf-value" id="pdf-ref-familiar">—</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Referencia Laboral</div>
+          <div class="pdf-value" id="pdf-ref-laboral">—</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GARANTÍAS -->
+    <div class="pdf-section">
+      <div class="pdf-section-title"><span class="pdf-section-num">5</span> Garantías</div>
+      <div class="pdf-row">
+        <div class="pdf-field">
+          <div class="pdf-label">Tipo de Garantía</div>
+          <div class="pdf-value" id="pdf-garantia">Ninguna declarada</div>
+        </div>
+        <div class="pdf-field">
+          <div class="pdf-label">Detalle</div>
+          <div class="pdf-value" id="pdf-garantia-detalle">—</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="pdf-footer">
+    <div class="pdf-footer-text">
+      <strong>RicoNorte — Inversiones & Gestión de Capital</strong><br>
+      República Dominicana • Documento generado digitalmente<br>
+      <span id="pdf-fecha-footer"></span>
+    </div>
+    <div class="pdf-signature-box">
+      <div style="height:40px;"></div>
+      <div class="pdf-sig-line"></div>
+      <div class="pdf-sig-label">Firma del Solicitante</div>
+      <div class="pdf-stamp">SOLICITUD PENDIENTE DE APROBACIÓN</div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════
+  LÓGICA PRINCIPAL
+  ════════════════════════════════════════════ -->
+<script>
+// ── CONFIG ──
+// La API está en /api/send-solicitud (función serverless de Vercel)
+const API_URL = '/api/send-solicitud';
+
+// ── UTILITIES ──
+function formatMoney(val) {
+  if (!val) return '—';
+  return 'RD$ ' + parseFloat(val).toLocaleString('es-DO', { minimumFractionDigits: 2 });
+}
+
+function genSolicitudNum() {
+  const d = new Date();
+  return '#RN-' + d.getFullYear().toString().slice(-2) +
+    String(d.getMonth()+1).padStart(2,'0') +
+    String(d.getDate()).padStart(2,'0') + '-' +
+    String(Math.floor(Math.random()*9000)+1000);
+}
+
+function showToast(title, msg, type='') {
+  const t = document.getElementById('toast');
+  const tt = document.getElementById('toastTitle');
+  const tm = document.getElementById('toastMsg');
+  tt.textContent = title;
+  tm.textContent = msg;
+  t.className = 'toast ' + type;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 4000);
+}
+
+function toggleGuarantee(type, active) {
+  const el = document.getElementById('detail_' + type);
+  if (active) el.classList.add('active');
+  else el.classList.remove('active');
+}
+
+// ══════════════════════════════════════
+// VALIDACIONES Y FORMATEO EN TIEMPO REAL
+// ══════════════════════════════════════
+
+// ── Formateo automático de teléfono dominicano (809) 000-0000 ──
+function formatPhone(input) {
+  let val = input.value.replace(/\D/g, ''); // solo números
+  if (val.length === 0) { input.value = ''; return; }
+  if (val.length <= 3) {
+    input.value = '(' + val;
+  } else if (val.length <= 6) {
+    input.value = '(' + val.slice(0,3) + ') ' + val.slice(3);
+  } else {
+    input.value = '(' + val.slice(0,3) + ') ' + val.slice(3,6) + '-' + val.slice(6,10);
+  }
+}
+
+// ── Validar teléfono completo (10 dígitos) ──
+function isValidPhone(val) {
+  const digits = val.replace(/\D/g, '');
+  return digits.length === 10;
+}
+
+// ── Formateo automático de cédula 000-0000000-0 ──
+function formatCedula(input) {
+  let val = input.value.replace(/\D/g, '');
+  if (val.length === 0) { input.value = ''; return; }
+  if (val.length <= 3) {
+    input.value = val;
+  } else if (val.length <= 10) {
+    input.value = val.slice(0,3) + '-' + val.slice(3);
+  } else {
+    input.value = val.slice(0,3) + '-' + val.slice(3,10) + '-' + val.slice(10,11);
+  }
+}
+
+// ── Validar cédula (11 dígitos) ──
+function isValidCedula(val) {
+  return val.replace(/\D/g, '').length === 11;
+}
+
+// ── Validar email ──
+function isValidEmail(val) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+}
+
+// ── Validar nombre (solo letras y espacios, mínimo 2 palabras) ──
+function isValidNombre(val) {
+  return /^[a-zA-ZÀ-ÿ\s]{3,}/.test(val.trim()) && val.trim().split(/\s+/).length >= 2;
+}
+
+// ── Validar monto (número positivo) ──
+function isValidMonto(val) {
+  return parseFloat(val) > 0;
+}
+
+// ── Validar plazo (número entre 1 y 360) ──
+function isValidPlazo(val) {
+  const n = parseInt(val);
+  return !isNaN(n) && n >= 1 && n <= 360;
+}
+
+// ── Mostrar error en campo ──
+function setFieldError(input, msg) {
+  input.classList.add('error');
+  let err = input.parentElement.querySelector('.field-error');
+  if (!err) {
+    err = document.createElement('span');
+    err.className = 'field-error';
+    err.style.cssText = 'color:#e05252;font-size:11px;margin-top:3px;display:block;font-weight:500;';
+    input.parentElement.appendChild(err);
+  }
+  err.textContent = msg;
+}
+
+// ── Limpiar error ──
+function clearFieldError(input) {
+  input.classList.remove('error');
+  const err = input.parentElement.querySelector('.field-error');
+  if (err) err.remove();
+}
+
+// ── Adjuntar validación en tiempo real a los campos ──
+function attachValidations() {
+
+  // Teléfonos — formateo automático
+  ['tel_movil','tel_casa','ref_personal_tel','ref_familiar_tel','ref_laboral_tel'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function() {
+      formatPhone(this);
+      if (this.value && !isValidPhone(this.value)) {
+        setFieldError(this, 'Ingrese un número de 10 dígitos. Ej: (809) 555-1234');
+      } else {
+        clearFieldError(this);
+      }
+    });
+    el.addEventListener('blur', function() {
+      if (this.required && this.value && !isValidPhone(this.value)) {
+        setFieldError(this, 'Número incompleto. Debe tener 10 dígitos.');
+      }
+    });
+  });
+
+  // Cédula — formateo automático
+  const cedula = document.getElementById('cedula');
+  cedula.addEventListener('input', function() {
+    formatCedula(this);
+    if (this.value && !isValidCedula(this.value)) {
+      setFieldError(this, 'La cédula debe tener 11 dígitos. Ej: 402-1234567-8');
+    } else {
+      clearFieldError(this);
+    }
+  });
+
+  // Nombre
+  const nombre = document.getElementById('nombre');
+  nombre.addEventListener('blur', function() {
+    if (this.value && !isValidNombre(this.value)) {
+      setFieldError(this, 'Ingrese nombre y apellido completos.');
+    } else {
+      clearFieldError(this);
+    }
+  });
+  nombre.addEventListener('input', function() {
+    // Solo letras y espacios
+    this.value = this.value.replace(/[^a-zA-ZÀ-ÿ\s]/g, '');
+    if (this.value && isValidNombre(this.value)) clearFieldError(this);
+  });
+
+  // Email
+  const email = document.getElementById('email');
+  email.addEventListener('blur', function() {
+    if (this.value && !isValidEmail(this.value)) {
+      setFieldError(this, 'Ingrese un correo válido. Ej: nombre@gmail.com');
+    } else {
+      clearFieldError(this);
+    }
+  });
+  email.addEventListener('input', function() {
+    if (this.value && isValidEmail(this.value)) clearFieldError(this);
+  });
+
+  // Monto
+  const monto = document.getElementById('monto');
+  monto.addEventListener('blur', function() {
+    if (this.value && !isValidMonto(this.value)) {
+      setFieldError(this, 'El monto debe ser mayor a 0.');
+    } else {
+      clearFieldError(this);
+    }
+  });
+  monto.addEventListener('input', function() {
+    if (parseFloat(this.value) < 0) this.value = '';
+    if (this.value && isValidMonto(this.value)) clearFieldError(this);
+  });
+
+  // Plazo
+  const plazo = document.getElementById('plazo');
+  plazo.addEventListener('input', function() {
+    // Solo números enteros positivos
+    this.value = this.value.replace(/[^0-9]/g, '');
+    if (parseInt(this.value) > 360) this.value = '360';
+    if (this.value && isValidPlazo(this.value)) {
+      clearFieldError(this);
+    } else if (this.value) {
+      setFieldError(this, 'Plazo entre 1 y 360 meses.');
+    }
+  });
+  plazo.addEventListener('blur', function() {
+    if (this.value && !isValidPlazo(this.value)) {
+      setFieldError(this, 'Ingrese un plazo válido entre 1 y 360 meses.');
+    }
+  });
+
+  // Números de ingresos/gastos — no negativos
+  ['ingresos','otros_ingresos','gastos','endeudamiento'].forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', function() {
+      if (parseFloat(this.value) < 0) this.value = '';
+    });
+  });
+}
+
+// ── PROGRESS BAR ──
+function updateProgress() {
+  const required = document.querySelectorAll('[required]');
+  let filled = 0;
+  required.forEach(el => {
+    if (el.type === 'checkbox' ? el.checked : el.value.trim()) filled++;
+  });
+  const tipoChecks = document.querySelectorAll('[name="tipo_prestamo"]:checked');
+  const hasTipo = tipoChecks.length > 0 ? 1 : 0;
+  const total = required.length + 1;
+  const pct = Math.round(((filled + hasTipo) / total) * 100);
+  document.getElementById('progressBar').style.width = pct + '%';
+}
+
+document.querySelectorAll('input, select, textarea').forEach(el => {
+  el.addEventListener('input', updateProgress);
+  el.addEventListener('change', updateProgress);
+});
+
+// ── POPULATE PDF ──
+function populatePDF() {
+  const num = genSolicitudNum();
+  document.getElementById('pdf-num').textContent = num;
+
+  const tipos = [...document.querySelectorAll('[name="tipo_prestamo"]:checked')].map(c=>c.value);
+  document.getElementById('pdf-tipo').textContent = tipos.length ? tipos.join(', ') : '—';
+  document.getElementById('pdf-monto').textContent = formatMoney(document.getElementById('monto').value);
+  document.getElementById('pdf-plazo').textContent = document.getElementById('plazo').value ? document.getElementById('plazo').value + ' meses' : '—';
+  document.getElementById('pdf-finalidad').textContent = document.getElementById('finalidad').value || '—';
+
+  document.getElementById('pdf-nombre').textContent = document.getElementById('nombre').value || '—';
+  document.getElementById('pdf-cedula').textContent = document.getElementById('cedula').value || '—';
+  document.getElementById('pdf-estado').textContent = document.getElementById('estado_civil').value || '—';
+  document.getElementById('pdf-direccion').textContent = document.getElementById('direccion').value || '—';
+  document.getElementById('pdf-tel').textContent = document.getElementById('tel_movil').value || '—';
+  document.getElementById('pdf-email').textContent = document.getElementById('email').value || '—';
+
+  document.getElementById('pdf-empresa').textContent = document.getElementById('empresa').value || '—';
+  document.getElementById('pdf-cargo').textContent = document.getElementById('cargo').value || '—';
+  document.getElementById('pdf-antiguedad').textContent = document.getElementById('antiguedad').value || '—';
+  document.getElementById('pdf-ingresos').textContent = formatMoney(document.getElementById('ingresos').value);
+  document.getElementById('pdf-otros-ingresos').textContent = formatMoney(document.getElementById('otros_ingresos').value);
+  document.getElementById('pdf-gastos').textContent = formatMoney(document.getElementById('gastos').value);
+  document.getElementById('pdf-deuda').textContent = formatMoney(document.getElementById('endeudamiento').value);
+
+  const rp = document.getElementById('ref_personal_nombre').value;
+  const rpt = document.getElementById('ref_personal_tel').value;
+  document.getElementById('pdf-ref-personal').textContent = rp ? `${rp} — ${rpt}` : '—';
+
+  const rf = document.getElementById('ref_familiar_nombre').value;
+  const rft = document.getElementById('ref_familiar_tel').value;
+  document.getElementById('pdf-ref-familiar').textContent = rf ? `${rf} — ${rft}` : '—';
+
+  const rl = document.getElementById('ref_laboral_nombre').value;
+  const rlt = document.getElementById('ref_laboral_tel').value;
+  document.getElementById('pdf-ref-laboral').textContent = rl ? `${rl} — ${rlt}` : '—';
+
+  const garantias = [...document.querySelectorAll('[name="garantia"]:checked')].map(c=>c.value);
+  document.getElementById('pdf-garantia').textContent = garantias.length ? garantias.join(', ') : 'Ninguna';
+
+  let detalle = '';
+  if (document.getElementById('garantia_vehiculo').checked) {
+    const m = document.getElementById('vehiculo_marca').value;
+    const mo = document.getElementById('vehiculo_modelo').value;
+    const a = document.getElementById('vehiculo_anio').value;
+    if (m||mo||a) detalle += `Vehículo: ${m} ${mo} ${a}. `;
+  }
+  if (document.getElementById('garantia_inmueble').checked) {
+    const t = document.getElementById('inmueble_titulo').value;
+    if (t) detalle += `Título No: ${t}. `;
+  }
+  if (document.getElementById('garantia_otros').checked) {
+    const d = document.getElementById('otros_desc').value;
+    if (d) detalle += d;
+  }
+  document.getElementById('pdf-garantia-detalle').textContent = detalle || '—';
+
+  const now = new Date();
+  document.getElementById('pdf-fecha-footer').textContent =
+    'Fecha de solicitud: ' + now.toLocaleDateString('es-DO', { day:'2-digit', month:'long', year:'numeric' });
+
+  return num;
+}
+
+// ── DOWNLOAD PDF ──
+let pdfBlob = null;
+
+async function generatePDFBlob() {
+  populatePDF();
+  const template = document.getElementById('pdf-template');
+  template.style.left = '0';
+  template.style.top = '0';
+  template.style.position = 'fixed';
+  template.style.zIndex = '-1';
+
+  await new Promise(r => setTimeout(r, 200));
+
+  const canvas = await html2canvas(template, {
+    scale: 2,
+    useCORS: true,
+    logging: false,
+    width: 794,
+    backgroundColor: '#ffffff'
+  });
+
+  template.style.position = 'absolute';
+  template.style.left = '-9999px';
+  template.style.zIndex = '';
+
+  const { jsPDF } = window.jspdf;
+  const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+  const imgData = canvas.toDataURL('image/jpeg', 0.95);
+  const pdfW = 210;
+  const pdfH = (canvas.height * pdfW) / canvas.width;
+  pdf.addImage(imgData, 'JPEG', 0, 0, pdfW, pdfH);
+
+  return pdf;
+}
+
+async function downloadPDF() {
+  try {
+    const pdf = await generatePDFBlob();
+    const nombre = document.getElementById('nombre').value || 'Solicitante';
+    const fecha = new Date().toISOString().slice(0,10);
+    pdf.save(`RicoNorte_Solicitud_${nombre.replace(/\s+/g,'_')}_${fecha}.pdf`);
+  } catch(e) {
+    showToast('Error', 'No se pudo generar el PDF', 'error');
+  }
+}
+
+// ── CLOSE MODAL ──
+function closeModal() {
+  document.getElementById('successModal').classList.remove('active');
+}
+
+// ── FORM SUBMIT ──
+document.getElementById('loanForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  // ── Validación completa antes de enviar ──
+  const tipos = document.querySelectorAll('[name="tipo_prestamo"]:checked');
+  if (tipos.length === 0) {
+    showToast('Campo requerido', 'Por favor seleccione al menos un tipo de préstamo', 'error');
+    return;
+  }
+
+  let valid = true;
+  let firstError = null;
+
+  // Campos requeridos vacíos
+  const required = document.querySelectorAll('[required]');
+  required.forEach(el => {
+    if (el.type === 'checkbox') {
+      if (!el.checked) { valid = false; }
+    } else if (!el.value.trim()) {
+      el.classList.add('error');
+      valid = false;
+      if (!firstError) firstError = el;
+    }
+  });
+
+  // Nombre completo
+  const nombreVal = document.getElementById('nombre').value;
+  if (nombreVal && !isValidNombre(nombreVal)) {
+    setFieldError(document.getElementById('nombre'), 'Ingrese nombre y apellido completos.');
+    valid = false; if (!firstError) firstError = document.getElementById('nombre');
+  }
+
+  // Cédula
+  const cedulaVal = document.getElementById('cedula').value;
+  if (cedulaVal && !isValidCedula(cedulaVal)) {
+    setFieldError(document.getElementById('cedula'), 'La cédula debe tener 11 dígitos.');
+    valid = false; if (!firstError) firstError = document.getElementById('cedula');
+  }
+
+  // Email
+  const emailVal = document.getElementById('email').value;
+  if (emailVal && !isValidEmail(emailVal)) {
+    setFieldError(document.getElementById('email'), 'Ingrese un correo válido.');
+    valid = false; if (!firstError) firstError = document.getElementById('email');
+  }
+
+  // Teléfono móvil
+  const telVal = document.getElementById('tel_movil').value;
+  if (telVal && !isValidPhone(telVal)) {
+    setFieldError(document.getElementById('tel_movil'), 'Número de teléfono incompleto.');
+    valid = false; if (!firstError) firstError = document.getElementById('tel_movil');
+  }
+
+  // Monto
+  const montoVal = document.getElementById('monto').value;
+  if (montoVal && !isValidMonto(montoVal)) {
+    setFieldError(document.getElementById('monto'), 'El monto debe ser mayor a 0.');
+    valid = false; if (!firstError) firstError = document.getElementById('monto');
+  }
+
+  // Plazo
+  const plazoVal = document.getElementById('plazo').value;
+  if (plazoVal && !isValidPlazo(plazoVal)) {
+    setFieldError(document.getElementById('plazo'), 'Plazo entre 1 y 360 meses.');
+    valid = false; if (!firstError) firstError = document.getElementById('plazo');
+  }
+
+  if (!valid) {
+    showToast('Formulario incompleto', 'Corrija los campos marcados en rojo', 'error');
+    if (firstError) firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const btn = document.getElementById('submitBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span>⏳</span> Procesando...';
+
+  try {
+    // Generar PDF
+    showToast('Generando PDF...', 'Preparando tu solicitud', '');
+    const pdf = await generatePDFBlob();
+    pdfBlob = pdf;
+
+    const num = document.getElementById('pdf-num').textContent;
+
+    // ── Preparar datos del formulario ──
+    const formData = {
+      solicitud_num: num,
+      nombre: document.getElementById('nombre').value,
+      cedula: document.getElementById('cedula').value,
+      email_solicitante: document.getElementById('email').value,
+      tipo_prestamo: [...tipos].map(c=>c.value).join(', '),
+      monto: formatMoney(document.getElementById('monto').value),
+      plazo: document.getElementById('plazo').value + ' meses',
+      finalidad: document.getElementById('finalidad').value,
+      telefono: document.getElementById('tel_movil').value,
+      empresa: document.getElementById('empresa').value,
+      ingresos: formatMoney(document.getElementById('ingresos').value),
+      fecha: new Date().toLocaleDateString('es-DO'),
+    };
+
+    // ── Convertir PDF a base64 para enviar como adjunto ──
+    showToast('Enviando...', 'Adjuntando PDF al correo', '');
+    const pdfBase64 = pdf.output('datauristring').split(',')[1];
+
+    // ── Llamar a la API de Vercel ──
+    const apiResponse = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ pdfBase64, formData, solicitudNum: num }),
+    });
+
+    const apiResult = await apiResponse.json();
+
+    if (!apiResponse.ok) {
+      throw new Error(apiResult.error || 'Error al enviar');
+    }
+
+    showToast('¡Enviado!', 'Solicitud y PDF recibidos por RicoNorte', 'success');
+
+    // ── Descargar PDF también en el dispositivo del solicitante ──
+    const nombre = document.getElementById('nombre').value || 'Solicitante';
+    const fecha = new Date().toISOString().slice(0,10);
+    pdf.save(`RicoNorte_Solicitud_${nombre.replace(/\s+/g,'_')}_${fecha}.pdf`);
+
+    // Mostrar modal de éxito
+    document.getElementById('successModal').classList.add('active');
+    document.getElementById('progressBar').style.background = 'linear-gradient(90deg, #2ecc71, #27ae60)';
+
+  } catch (err) {
+    console.error('Error:', err);
+    showToast('Error al enviar', 'Intente de nuevo o contacte a RicoNorte directamente', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<span class="btn-icon">📤</span> Enviar Solicitud';
+  }
+});
+
+// ── CLOSE MODAL ON OVERLAY CLICK ──
+document.getElementById('successModal').addEventListener('click', function(e) {
+  if (e.target === this) closeModal();
+});
+
+attachValidations();
+updateProgress();
+</script>
+</body>
+</html>
